@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="favicon1.ico">
+    <title>Accurate Locater</title>
+    <style>
+      #map {
+        height: 500px;
+        width: 100%;
+      }
+
+      h1{
+        margin-top: 5px;
+        padding: 3px;
+        text-align: center;
+        background-color: #cdd5e8;  
+      }
+
+        button{
+        margin-top: -5px;    
+        margin-left: 660px;
+        padding: 8px 12px;
+        background-color: rgb(238, 143, 143);
+        border: 2px solid rgb(235, 158, 158);
+      }
+      button:hover{
+        background-color: grey;
+      }
+      #map{
+        margin-top: 10px;
+        /* border: 2px solid red; */
+      }
+      p{
+        text-align: center;
+      }
+
+      footer {
+        margin-top: 10px;
+        text-align: center;
+        padding: 15px;
+        font-weight: bold;
+        background-color: whitesmoke;
+        box-shadow: 5px 5px 5px rgb(211, 208, 208);
+    }
+
+    marquee {
+        padding: 10px;
+        background-color: whitesmoke;
+        box-shadow: 5px 5px 5px rgb(209, 206, 206);
+        letter-spacing: 1.2px;
+        text-transform: capitalize;
+
+    }
+
+    #blink {
+        animation: blinker 1s linear infinite;
+        color: red;
+        font-weight: bold;
+    }
+    
+     
+      @media only screen and (max-width: 768px) {
+     
+        button{
+        margin-left: 140px;
+        }
+        #map{
+        margin-top: 20px;
+        /* border: 2px solid rgb(0, 255, 55); */
+      }
+      h1{
+        margin-top: 2px;
+        font-size: 27px; 
+        padding:5px 2px;
+      }
+      p{
+        text-align: justify;
+      }
+    
+    }
+
+    </style>
+  </head>
+  <body>
+    <marquee><a id="blink"> &#9677 </a>&nbsp;note: Please Allow your location for getting your accurate position..</marquee>
+
+    <h1>Live Location with Area Name</h1>
+    <button onclick="getLocation()">Get Location</button>
+    <div id="map"></div>
+    <p id="address"></p>
+
+    <footer>
+        Created by Mr. Ashwani Agnihotri@2023
+    </footer>
+
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCyfVIzilQCbnX_RakYCrUU-JKbwPfSfxY&callback=initMap"></script>
+    <script>
+            var map;
+            var marker;
+            var infoWindow;
+
+            function initMap() {
+            map = new google.maps.Map(document.getElementById("map"), {
+                center: { lat: -34.397, lng: 150.644 },
+                zoom: 40,
+            });
+
+            infoWindow = new google.maps.InfoWindow();
+            }
+
+            function getLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(showPosition, showError);
+            } else {
+                alert("Geolocation is not supported by this browser.");
+            }
+            }
+
+            function showPosition(position) {
+            var pos = {
+                lat: position.coords.latitude,
+                lng: position.coords.longitude,
+            };
+
+            if (!marker) {
+                marker = new google.maps.Marker({
+                position: pos,
+                map: map,
+                });
+            } else {
+                marker.setPosition(pos);
+            }
+
+            map.setCenter(pos);
+
+            var geocoder = new google.maps.Geocoder();
+            geocoder.geocode({ location: pos }, function (results, status) {
+                if (status === "OK") {
+                if (results[0]) {
+                    var address = results[0].formatted_address;
+                    document.getElementById("address").innerHTML = address;
+                
+                    var address = document.getElementById("address");
+                    address.style.backgroundColor = "honeydew";
+                    address.style.color = "black";
+                    address.style.fontSize = "23px";
+                    address.style.padding = "6px 6px";
+
+                } else {
+                    window.alert("No results found");
+                }
+                } else {
+                window.alert("Geocoder failed due to: " + status);
+                }
+            });
+            }
+
+            function showError(error) {
+            switch (error.code) {
+                case error.PERMISSION_DENIED:
+                alert("User denied the request for Geolocation.");
+                break;
+                case error.POSITION_UNAVAILABLE:
+                alert("Location information is unavailable.");
+                break;
+                case error.TIMEOUT:
+                alert("The request to get user location timed out.");
+                break;
+                case error.UNKNOWN_ERROR:
+                alert("An unknown error occurred.");
+                break;
+            }
+            }
+
+    </script>
+  </body>
+</html>
